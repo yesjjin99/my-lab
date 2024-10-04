@@ -1,6 +1,8 @@
 package core.spring_core;
 
+import core.spring_core.discount.DiscountPolicy;
 import core.spring_core.discount.FixDiscountPolicy;
+import core.spring_core.member.MemberRepository;
 import core.spring_core.member.MemberService;
 import core.spring_core.member.MemberServiceImpl;
 import core.spring_core.member.MemoryMemberRepository;
@@ -14,11 +16,19 @@ import core.spring_core.order.OrderServiceImpl;
 public class AppConfig {
     /* 생성자 주입 (DI) */
 
-    public MemberService memberService() {
-        return new MemberServiceImpl(new MemoryMemberRepository());
+    public MemberService memberService() {  // 역할
+        return new MemberServiceImpl(memberRepository());  // 구현
     }
 
     public OrderService orderService() {
-        return new OrderServiceImpl(new MemoryMemberRepository(), new FixDiscountPolicy());
+        return new OrderServiceImpl(memberRepository(), discountPolicy());
+    }
+
+    public MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+    }
+
+    public DiscountPolicy discountPolicy() {
+        return new FixDiscountPolicy();
     }
 }
