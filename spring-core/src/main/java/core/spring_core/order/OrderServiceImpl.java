@@ -2,6 +2,7 @@ package core.spring_core.order;
 
 import core.spring_core.discount.DiscountPolicy;
 import core.spring_core.discount.FixDiscountPolicy;
+import core.spring_core.discount.RateDiscountPolicy;
 import core.spring_core.member.Member;
 import core.spring_core.member.MemberRepository;
 import core.spring_core.member.MemoryMemberRepository;
@@ -9,7 +10,7 @@ import core.spring_core.member.MemoryMemberRepository;
 public class OrderServiceImpl implements OrderService {
 
     private final MemberRepository memberRepository = new MemoryMemberRepository();
-    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
+    private DiscountPolicy discountPolicy;
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {
