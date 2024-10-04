@@ -4,16 +4,25 @@ package core.spring_core.order;
 
 import static org.assertj.core.api.Assertions.*;
 
+import core.spring_core.AppConfig;
 import core.spring_core.member.Grade;
 import core.spring_core.member.Member;
 import core.spring_core.member.MemberService;
 import core.spring_core.member.MemberServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class OrderServiceTest {
 
-    MemberService memberService = new MemberServiceImpl();
-    OrderService orderService = new OrderServiceImpl();
+    MemberService memberService;
+    OrderService orderService;
+
+    @BeforeEach
+    public void beforeEach() {
+        AppConfig appConfig = new AppConfig();
+        memberService = appConfig.memberService();
+        orderService = appConfig.orderService();
+    }
 
     @Test
     public void createOrder() throws Exception {
