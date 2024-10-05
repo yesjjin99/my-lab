@@ -15,7 +15,7 @@ public class MemberApp {
 
         /**
          * 스프링은 모든 게 ApplicationContext 라는 것에서부터 시작
-         * ApplicationContext 이 스프링 컨테이너
+         * ApplicationContext 를 스프링 컨테이너라고 한다
          */
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(AppConfig.class);
         MemberService memberService = applicationContext.getBean("memberService", MemberService.class);
