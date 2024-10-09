@@ -13,6 +13,8 @@
 }
 ```
 
+<br>
+
 ### Autowired
 
 - 기존에는 @Bean 으로 등록한 스프링 빈들을 사용해 직접 의존관계를 명시해주었지만, 컴포넌트 스캔의 경우 이런 설정 정보 자체가 없다
@@ -31,6 +33,8 @@
 }
 ```
 
+<br>
+
 ### 컴포넌트 스캔 기본 대상
 
 - 컴포넌트 스캔의 시작 위치를 지정할 수 있다
@@ -45,3 +49,51 @@
   - `@Service` : 스프링 비즈니스 로직에서 사용
   - `@Repository` : 스프링 데이터 접근 계층에서 사용 
   - `@Configuration` : 스프링 설정 정보에서 사용
+
+<br>
+
+### 필터
+
+- includeFilters : 컴포넌트 스캔 대상을 추가로 지정한다. 
+- excludeFilters : 컴포넌트 스캔에서 제외할 대상을 지정한다.
+
+```java
+@Configuration
+@ComponentScan(
+    includeFilters = @Filter(type = FilterType.ANNOTATION, classes =
+        MyIncludeComponent.class),
+    excludeFilters = @Filter(type = FilterType.ANNOTATION, classes =
+        MyExcludeComponent.class)
+)
+static class ComponentFilterAppConfig {
+}
+```
+
+<br>
+
+- (참고) 커스텀 애노테이션
+    ```java
+    package hello.core.scan.filter;
+
+    import java.lang.annotation.*;
+    
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    public @interface MyIncludeComponent {
+    }
+    ```
+
+<br>
+
+### 중복 등록과 충돌
+
+컴포넌트 스캔에서 같은 빈 이름을 등록하면 어떻게 될까?
+
+1. 자동 빈 등록 vs 자동 빈 등록
+- 컴포넌트 스캔에 의해 자동으로 스프링 빈이 등록되는데, 그 이름이 같은 경우 스프링은 오류를 발생시킨다.
+   - `ConflictingBeanDefinitionException` 예외 발생
+
+2. 수동 빈 등록 vs 자동 빈 등록
+- 이 경우 수동 빈 등록이 우선권을 가진다 (수동 빈이 자동 빈을 오버라이딩 해버린다)
+- 다만, 최근 스프링 부트에서는 수동 빈 등록과 자동 빈 등록이 충돌나면 오류가 발생하도록 기본 값을 바꾸었다
