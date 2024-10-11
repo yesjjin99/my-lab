@@ -1,4 +1,4 @@
-package core.spring_core.filter;
+package core.spring_core.scan.filter;
 
 import java.lang.annotation.*;
 
