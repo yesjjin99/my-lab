@@ -4,13 +4,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import jpabook.jpashop.domain.Member;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository  // 컴포넌트 스캔의 대상이 되어 스프링 빈으로 등록
+@RequiredArgsConstructor  // 스프링 데이터 JPA를 사용하면 EntityManager 도 @Autowired 로 주입이 가능하여 생성자 주입이 가능해진다 (원래는 @PersistenceContext 로 주입)
 public class MemberRepository {
 
-    @PersistenceContext  // 스프링이 생성한 JPA의 EntityManager 를 주입
-    private EntityManager em;
+    private final EntityManager em;  // 스프링이 생성한 JPA의 EntityManager 를 주입
 
     public void save(Member member) {
         em.persist(member);  // persist 를 통해 영속성 컨텍스트에 멤버 객체를 넣고 이후 트랜잭션이 commit 되는 시점에 DB에 반영된다(insert query)
