@@ -46,15 +46,14 @@ public class OrderItem {
 
     // == 비즈니스 로직 == //
     public void cancel() {
-        item.addStock(count);
+        getItem().addStock(count);
     }
 
     // == 조회 로직 == //
-
     /**
      * 주문 상품 전체 가격 조회
      */
     public int getTotalPrice() {
-        return orderPrice * count;
+        return getOrderPrice() * getCount();
     }
 }
