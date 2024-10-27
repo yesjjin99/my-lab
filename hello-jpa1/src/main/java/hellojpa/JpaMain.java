@@ -20,9 +20,9 @@ public class JpaMain {
             // 1. 저장
             Member member = new Member();
             member.setId(1L);
-            member.setName("HelloA");
+            member.setName("HelloA");  // --> 비영속 상태
 
-            em.persist(member);
+            em.persist(member);  // --> 영속 상태
 
             // 2. 조회
             Member member1 = em.find(Member.class, 1L);  // PK 조회
