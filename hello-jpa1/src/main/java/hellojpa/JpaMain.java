@@ -20,7 +20,7 @@ public class JpaMain {
             // 1. 저장
             Member member = new Member();
             member.setId(1L);
-            member.setName("HelloA");  // --> 비영속 상태
+            member.setUsername("HelloA");  // --> 비영속 상태
 
             em.persist(member);  // --> 영속 상태
 
@@ -32,7 +32,7 @@ public class JpaMain {
 
             // 3. 수정
             Member findMember = em.find(Member.class, 1L);
-            findMember.setName("HelloJPA");  // JPA가 트랜잭션 내에서 트랜잭션 시점에 변경 감지를 해서 update 쿼리를 날린다 -> 트랜잭션 커밋
+            findMember.setUsername("HelloJPA");  // JPA가 트랜잭션 내에서 트랜잭션 시점에 변경 감지를 해서 update 쿼리를 날린다 -> 트랜잭션 커밋
 
             // 4. 삭제
             em.remove(findMember);
