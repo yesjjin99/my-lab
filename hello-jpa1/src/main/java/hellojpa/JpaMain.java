@@ -17,6 +17,7 @@ public class JpaMain {
         tx.begin();
 
         try {
+            /*
             // 1. 저장
             Member member = new Member();
             member.setId(1L);
@@ -36,6 +37,19 @@ public class JpaMain {
 
             // 4. 삭제
             em.remove(findMember);
+             */
+
+            Team team = new Team();
+            team.setName("TeamA");
+            em.persist(team);
+
+            Member member = new Member();
+            member.setName("member1");
+            member.setTeam(team);
+            em.persist(member);
+
+            Member findMember = em.find(Member.class, member.getId());
+            Team findTeam = findMember.getTeam();
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {

@@ -7,7 +7,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.TableGenerator;
 import jakarta.persistence.Temporal;
@@ -17,40 +19,21 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-//@SequenceGenerator(name = "member_seq_generator", sequenceName = "member_seq", initialValue = 1, allocationSize = 1)  // 데이터베이스 시퀀스 생성
-//@TableGenerator(name = "MEMBER_SEQ_GENERATOR", table = "MY_SEQUENCES", pkColumnValue = "MEMBER_SEQ", allocationSize = 50)
 public class Member {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE)  // Sequence 전략
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq_generator")  // 데이터베이스 시퀀스와 매핑
-//    @GeneratedValue(strategy = GenerationType.TABLE, generator = "MEMBER_SEQ_GENERATOR")  // 테이블 전략 매핑
+    @Id @GeneratedValue
+    @Column(name = "MEMBER_ID")
     private Long id;
 
-    @Column(name = "name")  // 컬럼 매핑
-    private String username;
+    @Column(name = "USERNAME")
+    private String name;
 
-    private Integer age;
+//    @Column(name = "TEAM_ID")
+//    private Long teamId;
 
-    @Enumerated(EnumType.STRING)  // enum 타입 매핑
-    private RoleType roleType;
-
-    @Temporal(TemporalType.TIMESTAMP)  // 날짜 타입 매핑
-    private Date createdDate;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastModifiedDate;
-
-    // 최신 Hibernate 에서는 @Temporal 사용할 필요 없이 LocalDate, LocalDateTime 을 사용하면 됨
-//    private LocalDateTime createdDate;
-//    private LocalDateTime lastModifiedDate;
-
-    @Lob  // BLOB, CLOB 매핑 : varchar 를 넘는 큰 데이터
-    private String description;
-
-    @Transient  // 특정 필드를 컬럼에 매핑하지 않음 (매핑 무시) -> 메모리에서만 사용
-    private int temp;
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
 
     public Long getId() {
         return id;
@@ -60,11 +43,19 @@ public class Member {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
