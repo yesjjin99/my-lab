@@ -45,11 +45,25 @@ public class JpaMain {
 
             Member member = new Member();
             member.setName("member1");
-            member.setTeam(team);
+            member.changeTeam(team);
             em.persist(member);
 
-            Member findMember = em.find(Member.class, member.getId());
-            Team findTeam = findMember.getTeam();
+            em.flush();
+            em.close();
+            /*
+            위의 Team, Member 객체는 생성과 함께 순수 객체 상태로 영속성 컨텍스트(1차 캐시)에 올라간다
+            1. 만약 em.flush(), em.close() 를 중간에 해준다면 DB에 반영하고 1차 캐시를 지우게 된다
+               -> 이후 Team 을 조회할 때 1차 캐시에 존재하지 않으므로 DB에 조회 쿼리를 날리게 되고, JPA 가 매핑된 값까지 모두 세팅해서 Team 을 반환해주게 된다
+               -> team.getMembers() 했을 때 값이 조회된다
+            2. em.flush(), em.close() 를 중간에 해주지 않고 그대로 진행한다면 1차 캐시에 현재 Team과 Member 가 남아있는 상태
+               -> Team 을 조회하게 되면 1차 캐시에서 값을 가져오게 된다
+               -> 1차 캐시에 저장되어 있는 값은 아직 DB에 반영되지 않은 순수 객체 상태이므로 team.getMembers() 를 해도 아무런 값을 가져오지 못한다
+
+               => 따라서 양방향 연관관계 매핑 시 순수한 객체 관계를 고려하여 항상 양쪽 다 값을 입력해야 한다
+             */
+
+            Member findMember = em.find(Member.class, member.getId());  // 1차 캐시
+            List<Member> members = findMember.getTeam().getMembers();
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {

@@ -32,7 +32,7 @@ public class Member {
 //    private Long teamId;
 
     @ManyToOne
-    @JoinColumn(name = "TEAM_ID")
+    @JoinColumn(name = "TEAM_ID")  // 왜래키가 있는 곳이 연관관계의 주인
     private Team team;
 
     public Long getId() {
@@ -57,5 +57,10 @@ public class Member {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public void changeTeam(Team team) {  // 연관관계 편의 메서드
+        this.team = team;
+        team.getMembers().add(this);  // 양방향 연관관계 매핑 시 순수한 객체 관계를 고려하여 항상 양쪽 다 값을 입력해야 한다
     }
 }
