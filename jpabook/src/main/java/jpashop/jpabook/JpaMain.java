@@ -2,6 +2,8 @@ package jpashop.jpabook;
 
 import jakarta.persistence.*;
 import java.util.List;
+import jpashop.jpabook.domain.Order;
+import jpashop.jpabook.domain.OrderItem;
 
 public class JpaMain {
 
@@ -17,6 +19,9 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Order order = new Order();
+            order.addOrderItem(new OrderItem());
+
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
             tx.rollback();
