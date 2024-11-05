@@ -40,7 +40,7 @@ public class JpaMain {
              */
 
             Team team = new Team();
-            team.setName("TeamA");
+            team.setName("teamA");
             em.persist(team);
 
             Member member = new Member();
