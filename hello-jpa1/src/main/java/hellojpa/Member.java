@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.TableGenerator;
 import jakarta.persistence.Temporal;
@@ -31,6 +32,10 @@ public class Member {
     @ManyToOne
     @JoinColumn(name = "TEAM_ID")  // 왜래키가 있는 곳이 연관관계의 주인
     private Team team;
+
+    @OneToOne
+    @JoinColumn(name = "LOCKER_ID")
+    private Locker locker;
 
     /* 일대다 양방향의 경우 */
 //    @ManyToOne
