@@ -2,6 +2,7 @@ package jpashop.jpabook;
 
 import jakarta.persistence.*;
 import java.util.List;
+import jpashop.jpabook.domain.Book;
 import jpashop.jpabook.domain.Order;
 import jpashop.jpabook.domain.OrderItem;
 
@@ -20,7 +21,20 @@ public class JpaMain {
 
         try {
             Order order = new Order();
-            order.addOrderItem(new OrderItem());
+            em.persist(order);
+
+            OrderItem orderItem = new OrderItem();
+            em.persist(orderItem);
+
+            order.addOrderItem(orderItem);
+
+            // ------
+
+            Book book = new Book();
+            book.setName("JPA");
+            book.setAuthor("Kim");
+
+            em.persist(book);
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
