@@ -8,7 +8,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)  // 조인 전략
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)  // 싱글 테이블 전략
 @DiscriminatorColumn  // default 는 엔티티명 -> DTYPE
 public class Item {
 
