@@ -65,6 +65,21 @@ public class JpaMain {
             Member findMember = em.find(Member.class, member.getId());  // 1차 캐시
             List<Member> members = findMember.getTeam().getMembers();
 
+            // ------
+
+            Movie movie = new Movie();
+            movie.setDirector("aaaa");
+            movie.setActor("bbbb");
+            movie.setName("청설");
+            movie.setPrice(10000);
+
+            em.persist(movie);
+
+            em.flush();
+            em.clear();
+
+            Movie findMovie = em.find(Movie.class, movie.getId());
+
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
             tx.rollback();
