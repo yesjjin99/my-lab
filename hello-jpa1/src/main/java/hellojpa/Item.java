@@ -8,8 +8,9 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)  // 구현 클래스마다 테이블 전략
-public abstract class Item {  // 이 전략에서는 Item 테이블을 만들지 않기 때문에 추상 클래스로 구현해야 함
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn  // default 는 엔티티명 -> DTYPE
+public class Item {
 
     @Id @GeneratedValue
     private Long id;
