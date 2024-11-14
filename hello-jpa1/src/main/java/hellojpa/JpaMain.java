@@ -37,8 +37,9 @@ public class JpaMain {
 
             // 4. 삭제
             em.remove(findMember);
-             */
+            */
 
+            /*
             Team team = new Team();
             team.setName("teamA");
             em.persist(team);
@@ -58,6 +59,16 @@ public class JpaMain {
             System.out.println("==============");
             m.getTeam().getName();  // 지연로딩 -> 실제 Team 의 속성을 사용하는 시점에 프록시 객체가 초기화되면서 DB에서 값을 가지고 온다
             System.out.println("==============");
+            */
+
+            Child child1 = new Child();
+            Child child2 = new Child();
+
+            Parent parent = new Parent();
+            parent.addChild(child1);
+            parent.addChild(child2);
+
+            em.persist(parent);  // CASCADE 에 의해 연관된 child1, child2 까지 persist 됨
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
