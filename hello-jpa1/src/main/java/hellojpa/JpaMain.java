@@ -70,6 +70,12 @@ public class JpaMain {
 
             em.persist(parent);  // CASCADE 에 의해 연관된 child1, child2 까지 persist 됨
 
+            em.flush();
+            em.clear();
+
+            Parent findParent = em.find(Parent.class, parent.getId());
+            findParent.getChildList().remove(0);  // 컬렉션에서 제거되면 연관관계가 끊어진 자식 엔티티가 되므로 orphanRemoval 옵션에 의해 delete 쿼리를 날림
+
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
             tx.rollback();

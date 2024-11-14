@@ -39,4 +39,12 @@ public class Parent {
     public void setName(String name) {
         this.name = name;
     }
+
+    public List<Child> getChildList() {
+        return childList;
+    }
+
+    public void setChildList(List<Child> childList) {
+        this.childList = childList;
+    }
 }
