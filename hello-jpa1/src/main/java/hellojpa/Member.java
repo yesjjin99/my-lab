@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,8 +35,8 @@ public class Member extends BaseEntity {
     @Column(name = "USERNAME")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "TEAM_ID")  // 왜래키가 있는 곳이 연관관계의 주인
+    @ManyToOne(fetch = FetchType.LAZY)  // 지연 로딩
+    @JoinColumn(name = "TEAM_ID")  // 외래키가 있는 곳이 연관관계의 주인
     private Team team;
 
     @OneToOne
