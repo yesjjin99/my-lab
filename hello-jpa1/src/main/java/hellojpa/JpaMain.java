@@ -39,13 +39,14 @@ public class JpaMain {
             em.remove(findMember);
             */
 
-            /*
             Team team = new Team();
             team.setName("teamA");
             em.persist(team);
 
             Member member = new Member();
             member.setName("member");
+            member.setHomeAddress(new Address("city", "street", "10000"));
+
             member.changeTeam(team);
             em.persist(member);
 
@@ -59,7 +60,8 @@ public class JpaMain {
             System.out.println("==============");
             m.getTeam().getName();  // 지연로딩 -> 실제 Team 의 속성을 사용하는 시점에 프록시 객체가 초기화되면서 DB에서 값을 가지고 온다
             System.out.println("==============");
-            */
+
+            // ----
 
             Child child1 = new Child();
             Child child2 = new Child();

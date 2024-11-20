@@ -1,6 +1,9 @@
 package hellojpa;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -46,10 +49,19 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<MemberProduct> memberProducts = new ArrayList<>();
 
-    /* 일대다 양방향의 경우 */
-//    @ManyToOne
-//    @JoinColumn(name = "TEAM_ID", insertable = false, updatable = false)
-//    private Team team;
+    @Embedded
+    private Period workPeriod;
+
+    @Embedded
+    private Address homeAddress;
+
+    @Embedded
+    @AttributeOverrides({  // 임베디드 타입이 중복되기 때문에(칼럼 중복) 칼럼명 재정의
+        @AttributeOverride(name = "city", column = @Column(name = "WORK_CITY")),
+        @AttributeOverride(name = "street", column = @Column(name = "WORK_STREET")),
+        @AttributeOverride(name = "zipcode", column = @Column(name = "WORK_ZIPCODE"))
+    })
+    private Address workAddress;
 
     public Long getId() {
         return id;
@@ -73,6 +85,22 @@ public class Member extends BaseEntity {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    public Period getWorkPeriod() {
+        return workPeriod;
+    }
+
+    public void setWorkPeriod(Period workPeriod) {
+        this.workPeriod = workPeriod;
+    }
+
+    public Address getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
     }
 
     public void changeTeam(Team team) {  // 연관관계 편의 메서드
