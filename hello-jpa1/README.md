@@ -7,3 +7,5 @@
 [영속성 전이(CASCADE)와 고아 객체(orphanRemoval)](https://github.com/yesjjin99/my-lab/blob/main/hello-jpa1/docs/%EC%98%81%EC%86%8D%EC%84%B1%20%EC%A0%84%EC%9D%B4%26%EA%B3%A0%EC%95%84%20%EA%B0%9D%EC%B2%B4.md)
 
 [값 타입](https://github.com/yesjjin99/my-lab/blob/main/hello-jpa1/docs/%EA%B0%92%20%ED%83%80%EC%9E%85.md)
+
+[임베디드 타입(Embedded Type, 복합 값 타입)](https://github.com/yesjjin99/my-lab/blob/main/hello-jpa1/docs/Embedded%20Type.md)
