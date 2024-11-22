@@ -1,6 +1,7 @@
 package hellojpa;
 
 import jakarta.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable  // 값 타입 정의
 public class Address {
@@ -28,5 +29,24 @@ public class Address {
 
     public String getZipcode() {
         return zipcode;
+    }
+
+    @Override
+    public boolean equals(Object o) {  // 값 타입의 비교를 위해 equals()를 오버라이딩해야 함
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Address address = (Address) o;
+        return Objects.equals(getCity(), address.getCity()) &&
+            Objects.equals(getStreet(), address.getStreet()) &&
+            Objects.equals(getZipcode(), address.getZipcode());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCity(), getStreet(), getZipcode());
     }
 }
