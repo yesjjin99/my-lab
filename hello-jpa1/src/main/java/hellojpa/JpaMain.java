@@ -2,6 +2,7 @@ package hellojpa;
 
 import jakarta.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 public class JpaMain {
 
@@ -77,6 +78,41 @@ public class JpaMain {
 
             Parent findParent = em.find(Parent.class, parent.getId());
             findParent.getChildList().remove(0);  // 컬렉션에서 제거되면 연관관계가 끊어진 자식 엔티티가 되므로 orphanRemoval 옵션에 의해 delete 쿼리를 날림
+
+            // ----
+
+            /* 값 타입 컬렉션 추가 */
+            Member member1 = new Member();
+            member1.setName("member1");
+            member1.setHomeAddress(new Address("homeCity", "street", "10000"));
+
+            member1.getFavoriteFoods().add("치킨");  // 값 타입 컬렉션의 라이프사이클이 member에 의존하기 때문에 별도로 persist 할 필요가 없다
+            member1.getFavoriteFoods().add("족발");
+            member1.getFavoriteFoods().add("피자");
+
+            member1.getAddressHistory().add(new AddressEntity("old1", "street", "10000"));
+            member1.getAddressHistory().add(new AddressEntity("old2", "street", "10000"));
+
+            em.persist(member1);
+
+            em.flush();
+            em.clear();
+
+            /* 값 타입 컬렉션 조회 */
+            Member findMember1 = em.find(Member.class, member1.getId());  // 값 타입 컬력센도 지연 로딩 사용 (Embedded 타입은 Member 조회할 때 같이 가져온다)
+            List<AddressEntity> addressHistory = findMember1.getAddressHistory();
+
+            /* 값 타입 업데이트 */
+//            findMember1.getHomeAddress().setCity("newCity");  // (X) side effect 가 발생할 수 있기 때문에 값 타입은 불변 객체로 설계해야 한다
+            Address a = findMember1.getHomeAddress();
+            findMember1.setHomeAddress(new Address("newCity", a.getStreet(), a.getZipcode()));  // (O) 값 타입 인스턴스를 새로 갈아끼워야 한다
+
+            /* 값 타입 컬렉션 업데이트 */
+            findMember1.getFavoriteFoods().remove("치킨");
+            findMember1.getFavoriteFoods().add("한식");  // 값 타입 컬렉션에서 값 타입을 지우고, 새로 값 타입을 추가해야 한다 -> 값 타입 인스턴스를 통으로 교체해야 한다
+
+            findMember1.getAddressHistory().remove(new AddressEntity("old1", "street", "10000"));  // 기본적으로 컬렉션들은 대부분 대상을 찾을 때 equals() 를 사용한다 -> 따라서 equals()를 제대로 오버라이딩하지 않으면 제대로 동작하지 않는다
+            findMember1.getAddressHistory().add(new AddressEntity("newCity1", "street", "10000"));
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {

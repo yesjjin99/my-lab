@@ -2,31 +2,23 @@ package hellojpa;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.TableGenerator;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.persistence.Transient;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Member extends BaseEntity {
@@ -50,9 +42,6 @@ public class Member extends BaseEntity {
     private List<MemberProduct> memberProducts = new ArrayList<>();
 
     @Embedded
-    private Period workPeriod;
-
-    @Embedded
     private Address homeAddress;
 
     @Embedded
@@ -62,6 +51,29 @@ public class Member extends BaseEntity {
         @AttributeOverride(name = "zipcode", column = @Column(name = "WORK_ZIPCODE"))
     })
     private Address workAddress;
+
+    @ElementCollection  // 값 타입 컬렉션
+    @CollectionTable(name = "FAVORITE_FOOD", joinColumns =
+        @JoinColumn(name = "MEMBER_ID")  // 외래키 값 설정
+    )
+    @Column(name = "FOOD_NAME")
+    private Set<String> favoriteFoods = new HashSet<>();
+
+//    @ElementCollection
+//    @CollectionTable(name = "ADDRESS", joinColumns =
+//        @JoinColumn(name = "MEMBER_ID")
+//    )
+//    private List<Address> addressHistory = new ArrayList<>();
+
+    /* 실무에서는 상황에 따라 값 타입 컬렉션 대신에 일대다 관계를 고려 */
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "MEMBER_ID")  // 특수한 상황이므로 이런 경우 일대다 단방향 매핑을 건다
+    private List<AddressEntity> addressHistory = new ArrayList<>();
+
+    public void changeTeam(Team team) {  // 연관관계 편의 메서드
+        this.team = team;
+        team.getMembers().add(this);  // 양방향 연관관계 매핑 시 순수한 객체 관계를 고려하여 항상 양쪽 다 값을 입력해야 한다
+    }
 
     public Long getId() {
         return id;
@@ -87,14 +99,6 @@ public class Member extends BaseEntity {
         this.team = team;
     }
 
-    public Period getWorkPeriod() {
-        return workPeriod;
-    }
-
-    public void setWorkPeriod(Period workPeriod) {
-        this.workPeriod = workPeriod;
-    }
-
     public Address getHomeAddress() {
         return homeAddress;
     }
@@ -103,8 +107,19 @@ public class Member extends BaseEntity {
         this.homeAddress = homeAddress;
     }
 
-    public void changeTeam(Team team) {  // 연관관계 편의 메서드
-        this.team = team;
-        team.getMembers().add(this);  // 양방향 연관관계 매핑 시 순수한 객체 관계를 고려하여 항상 양쪽 다 값을 입력해야 한다
+    public Set<String> getFavoriteFoods() {
+        return favoriteFoods;
+    }
+
+    public void setFavoriteFoods(Set<String> favoriteFoods) {
+        this.favoriteFoods = favoriteFoods;
+    }
+
+    public List<AddressEntity> getAddressHistory() {
+        return addressHistory;
+    }
+
+    public void setAddressHistory(List<AddressEntity> addressHistory) {
+        this.addressHistory = addressHistory;
     }
 }
