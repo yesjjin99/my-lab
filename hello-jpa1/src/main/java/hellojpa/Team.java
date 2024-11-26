@@ -18,7 +18,7 @@ public class Team extends BaseEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team")  // mappedBy 에는 반대쪽에 자신이 매핑되어 있는 필드명
     private List<Member> members = new ArrayList<>();
 
     /* 일대다 단방향 매핑의 경우 */
