@@ -18,28 +18,6 @@ public class JpaMain {
         tx.begin();
 
         try {
-            /*
-            // 1. 저장
-            Member member = new Member();
-            member.setId(1L);
-            member.setUsername("HelloA");  // --> 비영속 상태
-
-            em.persist(member);  // --> 영속 상태
-
-            // 2. 조회
-            Member member1 = em.find(Member.class, 1L);  // PK 조회
-
-            List findMembers = em.createQuery("select m from Member m", Member.class)  // JPQL
-                .getResultList();
-
-            // 3. 수정
-            Member findMember = em.find(Member.class, 1L);
-            findMember.setUsername("HelloJPA");  // JPA가 트랜잭션 내에서 트랜잭션 시점에 변경 감지를 해서 update 쿼리를 날린다 -> 트랜잭션 커밋
-
-            // 4. 삭제
-            em.remove(findMember);
-            */
-
             Team team = new Team();
             team.setName("teamA");
             em.persist(team);
@@ -113,6 +91,15 @@ public class JpaMain {
 
             findMember1.getAddressHistory().remove(new AddressEntity("old1", "street", "10000"));  // 기본적으로 컬렉션들은 대부분 대상을 찾을 때 equals() 를 사용한다 -> 따라서 equals()를 제대로 오버라이딩하지 않으면 제대로 동작하지 않는다
             findMember1.getAddressHistory().add(new AddressEntity("newCity1", "street", "10000"));
+
+            // ----
+
+            List<Member> result = em.createQuery(
+                "select m from Member m where m.name like '%kim%'",
+                Member.class
+            ).getResultList();  // JPQL -> 엔티티 객체를 대상으로 쿼리
+
+
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
