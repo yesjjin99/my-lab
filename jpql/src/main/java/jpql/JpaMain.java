@@ -74,8 +74,12 @@ public class JpaMain {
 
             // ----
 
-            List<Member> result5 = em.createQuery("select m from Member m inner join m.team t", Member.class)
+            List<Member> result5 = em.createQuery("select m from Member m join m.team t", Member.class)
                 .getResultList();
+
+            em.createQuery("select m from Member m join m.team t on t.name = :teamName", Member.class)  // JOIN - ON절 : 조인 대상 필터링, 연관관계 없는 엔티티 외부 조인
+                    .setParameter("teamName", "teamA")
+                    .getResultList();
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
