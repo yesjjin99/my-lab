@@ -7,6 +7,7 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import java.util.List;
+import jpql.dto.MemberDTO;
 
 public class JpaMain {
 
@@ -36,6 +37,32 @@ public class JpaMain {
             Member result1 = em.createQuery("select m from Member m where m.username = :username", Member.class)
                 .setParameter("username", "member1")  // 파라미터 바인딩
                 .getSingleResult();
+
+            // ---
+
+            Member member2 = new Member();
+            member.setUsername("member2");
+            member.setAge(20);
+            em.persist(member);
+
+            em.flush();
+            em.close();
+
+            /* 엔티티 프로젝션을 하면 -> 조회한 값들이 모두 영속성 컨텍스트에서 관리된다 */
+            List<Member> result2 = em.createQuery("select m from Member m", Member.class)
+                .getResultList();
+
+            Member findMember = result2.get(0);
+            findMember.setAge(30);  // dirty checking 발생 -> 데이터 정상적으로 반영된다
+
+
+            List<MemberDTO> result3 = em.createQuery(
+                    "select new jpql.dto.MemberDTO(m.username, m.age) from Member m",
+                    MemberDTO.class)  // 엔티티 프로젝션이 아닌 여러 값을 프로젝션하는 경우에는 DTO로 조회하기 위해 new 연산을 사용해야 한다
+                .getResultList();
+
+            MemberDTO memberDTO = result3.get(0);
+            System.out.println("memberDTO.getUsername() = " + memberDTO.getUsername());
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
