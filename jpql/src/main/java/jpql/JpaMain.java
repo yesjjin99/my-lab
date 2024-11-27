@@ -68,9 +68,9 @@ public class JpaMain {
             // ----
 
             List<Member> result4 = em.createQuery("select m from Member m order by m.age desc", Member.class)
-                    .setFirstResult(0)  // 페이징 API : 조회 시작 위치
-                    .setMaxResults(10)  // 페이징 API : 조회할 데이터 수
-                    .getResultList();
+                .setFirstResult(0)  // 페이징 API : 조회 시작 위치
+                .setMaxResults(10)  // 페이징 API : 조회할 데이터 수
+                .getResultList();
 
             // ----
 
@@ -78,8 +78,21 @@ public class JpaMain {
                 .getResultList();
 
             em.createQuery("select m from Member m join m.team t on t.name = :teamName", Member.class)  // JOIN - ON절 : 조인 대상 필터링, 연관관계 없는 엔티티 외부 조인
-                    .setParameter("teamName", "teamA")
-                    .getResultList();
+                .setParameter("teamName", "teamA")
+                .getResultList();
+
+            // ----
+
+            /* 서브 쿼리 - select, where, having, from (하이버네이트6부터) 절에서 모두 사용 가능 */
+            em.createQuery("select m from Member m where exists (select t from m.team t where t.name = :teamName)", Member.class)  // 서브 쿼리 - exists (서브 쿼리에 결과가 존재하면 참)
+                .setParameter("teamName", "teamA")
+                .getResultList();
+
+            em.createQuery("select o from Order o where o.orderAmount > all (select p.stockAmount from Product p)", Order.class)  // 서브 쿼리 - all (모두 만족하면 참)
+                .getResultList();
+
+            em.createQuery("select m from Member m where m.team = any (select t from Team t)", Member.class)  // 서브 쿼리 - any (조건을 하나라도 만족하면 참)
+                .getResultList();
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
