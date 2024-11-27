@@ -64,6 +64,13 @@ public class JpaMain {
             MemberDTO memberDTO = result3.get(0);
             System.out.println("memberDTO.getUsername() = " + memberDTO.getUsername());
 
+            // ----
+
+            List<Member> result4 = em.createQuery("select m from Member m order by m.age desc", Member.class)
+                    .setFirstResult(0)  // 페이징 API : 조회 시작 위치
+                    .setMaxResults(10)  // 페이징 API : 조회할 데이터 수
+                    .getResultList();
+
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
             tx.rollback();

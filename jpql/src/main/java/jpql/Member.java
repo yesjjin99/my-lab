@@ -42,4 +42,13 @@ public class Member {
     public void setAge(int age) {
         this.age = age;
     }
+
+    @Override
+    public String toString() {  // 양방향으로 서로 순환참조되면 무한 루프가 될 수 있기 때문에 team 같은 것들은 빼워야 한다
+        return "Member{" +
+            "id=" + id +
+            ", username='" + username + '\'' +
+            ", age=" + age +
+            '}';
+    }
 }
