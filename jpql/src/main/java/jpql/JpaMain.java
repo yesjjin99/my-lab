@@ -23,10 +23,19 @@ public class JpaMain {
         tx.begin();
 
         try {
+            Team team = new Team();
+            team.setName("teamA");
+            em.persist(team);
+
             Member member = new Member();
             member.setUsername("member1");
             member.setAge(20);
+
+            member.changeTeam(team);
             em.persist(member);
+
+            em.flush();
+            em.clear();
 
             TypedQuery<Member> query1 = em.createQuery("select m from Member m", Member.class);
             List<Member> resultList = query1.getResultList();
@@ -39,14 +48,6 @@ public class JpaMain {
                 .getSingleResult();
 
             // ---
-
-            Member member2 = new Member();
-            member.setUsername("member2");
-            member.setAge(20);
-            em.persist(member);
-
-            em.flush();
-            em.close();
 
             /* 엔티티 프로젝션을 하면 -> 조회한 값들이 모두 영속성 컨텍스트에서 관리된다 */
             List<Member> result2 = em.createQuery("select m from Member m", Member.class)
@@ -70,6 +71,11 @@ public class JpaMain {
                     .setFirstResult(0)  // 페이징 API : 조회 시작 위치
                     .setMaxResults(10)  // 페이징 API : 조회할 데이터 수
                     .getResultList();
+
+            // ----
+
+            List<Member> result5 = em.createQuery("select m from Member m inner join m.team t", Member.class)
+                .getResultList();
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
