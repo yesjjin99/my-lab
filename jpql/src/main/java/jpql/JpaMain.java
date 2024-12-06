@@ -30,6 +30,7 @@ public class JpaMain {
             Member member = new Member();
             member.setUsername("member1");
             member.setAge(20);
+            member.setType(MemberType.ADMIN);
 
             member.changeTeam(team);
             em.persist(member);
@@ -92,6 +93,15 @@ public class JpaMain {
                 .getResultList();
 
             em.createQuery("select m from Member m where m.team = any (select t from Team t)", Member.class)  // 서브 쿼리 - any (조건을 하나라도 만족하면 참)
+                .getResultList();
+
+            // ----
+
+            /* JPQL 타입 표현 */
+            String query3 = "select m.username, 'HELLO', true from Member m "
+                            + "where m.type = :userType";
+            em.createQuery(query3)
+                .setParameter("userType", MemberType.ADMIN)
                 .getResultList();
 
             tx.commit();  // 트랜잭션 커밋

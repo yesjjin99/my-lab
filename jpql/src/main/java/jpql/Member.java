@@ -1,6 +1,8 @@
 package jpql;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -19,6 +21,8 @@ public class Member {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "TEAM_ID")
     private Team team;
+
+    private MemberType type;
 
     public void changeTeam(Team team) {  // 연관관계 편의 메서드 (양방향일 때)
         this.team = team;
@@ -55,6 +59,15 @@ public class Member {
 
     public void setTeam(Team team) {
         this.team = team;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public MemberType getType() {
+        return type;
+    }
+
+    public void setType(MemberType type) {
+        this.type = type;
     }
 
     @Override
