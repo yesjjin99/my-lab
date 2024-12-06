@@ -135,6 +135,17 @@ public class JpaMain {
 
             em.createQuery("select size(t.members) from Team t").getResultList();  // 양방향 연관관계 시 컬렉션의 크기 반환
 
+            // ----
+
+            /* 경로 표현식 */
+            em.createQuery("select m.id from Member m").getResultList();  // 상태 필드
+            em.createQuery("select m.team from Member m").getResultList();  // 단일 값 연관 필드
+            em.createQuery("select m.team.name from Member m").getResultList();  // 묵시적 내부 조인(inner join) 발생, 탐색O
+
+            em.createQuery("select t.members from Team t").getResultList();  // 컬렉션 값 연관 필드
+            em.createQuery("select t.members.size from Team t").getSingleResult();  // 묵시적 내부 조인 발생, 탐색X
+            em.createQuery("select m.username from Team t join t.members m").getResultList();  // FROM 절에서 명시적 조인을 통해 별칭을 얻으면 별칭을 통해 탐색 가능
+
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
