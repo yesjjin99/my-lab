@@ -68,6 +68,7 @@ public class JpaMain {
 
             // ----
 
+            /* 페이징 */
             List<Member> result4 = em.createQuery("select m from Member m order by m.age desc", Member.class)
                 .setFirstResult(0)  // 페이징 API : 조회 시작 위치
                 .setMaxResults(10)  // 페이징 API : 조회할 데이터 수
@@ -75,6 +76,7 @@ public class JpaMain {
 
             // ----
 
+            /* 조인 */
             List<Member> result5 = em.createQuery("select m from Member m join m.team t", Member.class)
                 .getResultList();
 
@@ -103,6 +105,24 @@ public class JpaMain {
             em.createQuery(query3)
                 .setParameter("userType", MemberType.ADMIN)
                 .getResultList();
+
+            // ----
+
+            /* 조건식 */
+            String query4 = "select "
+                + "case when m.age <= 10 then '학생요금'"
+                + "     when m.age >= 60 then '경로요금'"
+                + "     else '일반요금' "
+                + "end "
+                + "from Member m";
+            em.createQuery(query4, String.class).getResultList();
+
+            em.createQuery("select coalesce(m.username, '이름 없는 회원') from Member m")
+                .getResultList();  // m.username 이 null 이면, '이름 없는 회원' 반환
+
+            em.createQuery("select nullif(m.username, '관리자') from Member m")
+                .getResultList();  // 사용자 이름이 ‘관리자’면 null 을 반환하고 나머지는 본인의 이름을 반환
+
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
