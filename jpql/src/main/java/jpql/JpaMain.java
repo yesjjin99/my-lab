@@ -123,6 +123,18 @@ public class JpaMain {
             em.createQuery("select nullif(m.username, '관리자') from Member m")
                 .getResultList();  // 사용자 이름이 ‘관리자’면 null 을 반환하고 나머지는 본인의 이름을 반환
 
+            // ----
+
+            /* JPQL 기본 함수 */
+            em.createQuery("select 'a' || 'b' from Member m").getResultList();
+            em.createQuery("select concat('a', 'b') from Member m").getResultList();
+
+            em.createQuery("select substring(m.username, 2, 3) from Member m").getResultList();
+
+            em.createQuery("select locate('de', 'abcdefg') from Member m").getResultList();  // 앞의 값이 있는 index 반환
+
+            em.createQuery("select size(t.members) from Team t").getResultList();  // 양방향 연관관계 시 컬렉션의 크기 반환
+
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
