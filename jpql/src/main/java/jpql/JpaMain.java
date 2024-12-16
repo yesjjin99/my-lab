@@ -28,7 +28,7 @@ public class JpaMain {
             em.persist(team);
 
             Member member = new Member();
-            member.setUsername("member1");
+            member.setUsername("member2");
             member.setAge(20);
             member.setType(MemberType.ADMIN);
 
@@ -45,7 +45,7 @@ public class JpaMain {
             Member result = query2.getSingleResult();
 
             Member result1 = em.createQuery("select m from Member m where m.username = :username", Member.class)
-                .setParameter("username", "member1")  // 파라미터 바인딩
+                .setParameter("username", "member2")  // 파라미터 바인딩
                 .getSingleResult();
 
             // ---
@@ -146,6 +146,56 @@ public class JpaMain {
             em.createQuery("select t.members.size from Team t").getSingleResult();  // 묵시적 내부 조인 발생, 탐색X
             em.createQuery("select m.username from Team t join t.members m").getResultList();  // FROM 절에서 명시적 조인을 통해 별칭을 얻으면 별칭을 통해 탐색 가능
 
+
+            // ----
+
+            /* fetch join */
+
+            Team teamA = new Team();
+            teamA.setName("팀A");
+            em.persist(teamA);
+
+            Team teamB = new Team();
+            teamA.setName("팀B");
+            em.persist(teamB);
+
+            Member member1 = new Member();
+            member1.setUsername("회원1");
+            member1.changeTeam(teamA);
+            em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("회원1");
+            member2.changeTeam(teamA);
+            em.persist(member2);
+
+            Member member3 = new Member();
+            member3.setUsername("회원3");
+            member3.changeTeam(teamB);
+            em.persist(member3);
+
+            em.flush();
+            em.clear();
+
+            String query5 = "select m from Member m join fetch m.team";  // N + 1 문제를 해결하는 fetch join
+            List<Member> result6 = em.createQuery(query5, Member.class).getResultList();
+
+            for (Member m : result6) {
+                /*
+                이 때는 fetch join 으로 한 번에 team 을 모두 join 해서 가져오기 때문에 프록시를 넣어주는 게 아니다.
+                즉, 영속성 컨텍스트에 각 member에 해당하는 team 들이 모두 존재한다.
+                이미 객체 그래프를 한 방 쿼리로 모두 DB에서 가져와 1차 캐시에 올려놓은 상태이기 때문이다.
+                따라서 추가 N번 쿼리가 나가지 않는다(N + 1 문제 해결)
+                 */
+                System.out.println("member = " + m.getUsername() + ", " + m.getTeam().getName());
+            }
+
+            String query6 = "select t from Team t join fetch t.members";
+            List<Team> result7 = em.createQuery(query6, Team.class).getResultList();
+
+            for (Team t : result7) {
+                System.out.println("team = " + t.getName() + ", " + t.getMembers().size());
+            }
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
