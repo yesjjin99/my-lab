@@ -211,6 +211,22 @@ public class JpaMain {
                 .setParameter("username", "회원1")
                 .getResultList();
 
+            // ----
+
+            /* 벌크 연산 */
+            // 쿼리가 나갈 때 flush 자동 호출 -> 영속성 컨텍스트에 위에서 저장하고 조회한 값들이 남아있다
+            int resultCount = em.createQuery("update Member m set m.age = 20")  // FLUSH 자동 호출 (커밋을 하거나 쿼리가 나갈 때 flush가 자동 호출됨 or 강제로 flush 호출)
+                .executeUpdate();// bulk 연산 실행
+
+            em.clear();  // 아래와 같이 데이터 정합성 문제가 발생할 수 있기 때문에 웬만하면 bulk 연산 수행 후 영속성 컨텍스트를 초기화하는 것이 좋다!
+
+            Member findMember2 = em.find(Member.class, member1.getId());  // 영속성 컨텍스트가 초기화되었기 때문에 새로 조회해서 가져와야 한다
+
+            // bulk 연산은 영속성 컨텍스트를 무시하고 데이터베이스에 직접 쿼리를 날리기 때문에
+            // 아래와 같이 member의 값을 접근하면 bulk 연산 이전에 영속성 컨텍스트에 저장된 값들이 반환되게 된다
+            // 즉, DB에만 bulk 연산을 한 결과가 반영되고, 영속성 컨텍스트에는 bulk 연산이 반영되지 않은 결과가 남아있게 있게 된다 => 따라서 bulk 연산 후 영속성 컨텍스트 초기화를 해주어야 한다
+            System.out.println("member1.getAge() = " + findMember2.getAge());
+
 
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
