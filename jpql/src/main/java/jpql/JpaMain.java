@@ -197,6 +197,21 @@ public class JpaMain {
                 System.out.println("team = " + t.getName() + ", " + t.getMembers().size());
             }
 
+            // ----
+
+            /* Named 쿼리 */
+            /* spring data jpa를 사용하면 아래와 같이 @Query 를 통해 named 쿼리를 작성할 수 있다
+            public interface UserRepository extends JpaRepository<User, Long> {
+
+                @Query("select u from User u where u.emailAddress = ?1")
+                User findByEmailAddress(String emailAddress);
+            }
+             */
+            em.createNamedQuery("Member.findByUsername", Member.class)
+                .setParameter("username", "회원1")
+                .getResultList();
+
+
             tx.commit();  // 트랜잭션 커밋
         } catch (Exception e) {
             tx.rollback();
